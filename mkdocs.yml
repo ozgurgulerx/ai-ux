@@ -1,0 +1,11 @@
+site_name: AI-UX
+repo_url: https://github.com/ozgurgulerx/ai-ux
+theme: material
+nav:
+  - Home: index.md
+  - Docs: 
+      - Overview: docs/_index.md
+  - Research:
+      - Overview: research/_index.md
+markdown_extensions: [pymdownx.highlight, admonition]
+
