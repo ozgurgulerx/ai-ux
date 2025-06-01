@@ -36,6 +36,8 @@ jobs:
           git config user.name  "research-bot"
           git config user.email "bot@users.noreply.github.com"
           git add research/_index.md
-          git diff --cached --quiet || { \
-            git commit -m "chore: regen research index"; \
-            git push; }
+          git diff --cached --quiet && exit 0
+
+          git commit -m "chore: regen research index"
+          git pull --rebase          # <— avoid non-fast-forward
+          git push
