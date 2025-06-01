@@ -1,5 +1,6 @@
 name: Build-Docs-Index
-
+permissions:         # <-- add
+  contents: write    # allow push back to repo
 on:
   push:                # regenerate whenever docs change
     paths:

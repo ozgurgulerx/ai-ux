@@ -1,4 +1,6 @@
 name: Deploy-Docs
+permissions:         # <-- add
+  contents: write    # allow push back to repo
 on:
   push:
     branches: [main]

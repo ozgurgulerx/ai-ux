@@ -1,5 +1,8 @@
 # build_research_index.yml
 name: Build-Research-Index
+permissions:         # <-- add
+  contents: write    # allow push back to repo
+
 on: [push, workflow_dispatch]
 jobs:
   toc:
