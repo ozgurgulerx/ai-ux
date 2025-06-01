@@ -1,19 +1,41 @@
-# build_research_index.yml
 name: Build-Research-Index
-permissions:         # <-- add
-  contents: write    # allow push back to repo
+permissions:
+  contents: write
 
-on: [push, workflow_dispatch]
+on:
+  push:
+    paths:
+      - 'research/**/*.md'
+      - '.github/workflows/build_research_index.yml'
+  workflow_dispatch:
+
 jobs:
   toc:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      - run: |
-          python scripts/make_research_index.py
-      - run: |
-          git config user.name bot
-          git config user.email bot@x
+
+      - name: Re-create research/_index.md
+        run: |
+          mkdir -p research
+          idx="research/_index.md"
+          echo "# Research overview"        >  "$idx"
+          echo "_Auto-generated $(date +%F)_" >> "$idx"
+          echo                                >> "$idx"
+
+          for f in $(git ls-files research/**/*.md | grep -v '_index.md' | sort); do
+            title=$(grep -m1 '^#' "$f" || true | sed 's/^# //')
+            rel=${f#research/}
+            echo "- [${title:-$rel}](${rel})" >> "$idx"
+          done
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name  "research-bot"
+          git config user.email "bot@users.noreply.github.com"
           git add research/_index.md
-          git commit -m "regen research index" || true
-          git push
+          git diff --cached --quiet || { \
+            git commit -m "chore: regen research index"; \
+            git push; }

@@ -1,6 +1,7 @@
 name: Deploy-Docs
-permissions:         # <-- add
-  contents: write    # allow push back to repo
+permissions:
+  contents: write      # needed for gh-pages push
+
 on:
   push:
     branches: [main]
@@ -12,10 +13,17 @@ on:
 
 jobs:
   build:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: {python-version: '3.11'}
-      - run: pip install mkdocs-material
-      - run: mkdocs gh-deploy --force   # publishes to gh-pages
+        with:
+          python-version: '3.11'
+
+      - name: Install MkDocs
+        run: pip install mkdocs-material
+
+      - name: Build & deploy to gh-pages
+        run: mkdocs gh-deploy --force --remote-branch gh-pages
