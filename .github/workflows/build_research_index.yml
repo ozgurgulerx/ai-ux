@@ -1,0 +1,16 @@
+# build_research_index.yml
+name: Build-Research-Index
+on: [push, workflow_dispatch]
+jobs:
+  toc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          python scripts/make_research_index.py
+      - run: |
+          git config user.name bot
+          git config user.email bot@x
+          git add research/_index.md
+          git commit -m "regen research index" || true
+          git push

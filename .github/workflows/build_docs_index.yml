@@ -1,0 +1,39 @@
+name: Build-Docs-Index
+
+on:
+  push:                # regenerate whenever docs change
+    paths:
+      - 'docs/**.md'
+      - '.github/workflows/build_docs_index.yml'
+  workflow_dispatch:   # manual “Run workflow” button
+
+jobs:
+  toc:
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v4
+
+    - name: Re-create docs/_index.md
+      run: |
+        mkdir -p docs
+        index_file="docs/_index.md"
+
+        echo "# Docs overview"                         >  "$index_file"
+        echo "Auto-generated on $(date +%F)."         >> "$index_file"
+        echo                                           >> "$index_file"
+
+        # list every .md in docs/ except _index.md, sorted A-Z
+        for f in $(git ls-files docs/*.md | grep -v '_index.md' | sort); do
+          title=$(grep -m1 '^#' "$f" | sed 's/^# //')
+          rel=${f#docs/}
+          echo "- [${title:-${rel}}](${rel})" >> "$index_file"
+        done
+
+    - name: Commit & push if changed
+      run: |
+        git config user.name  "docs-bot"
+        git config user.email "bot@users.noreply.github.com"
+        git add docs/_index.md
+        git diff --cached --quiet || git commit -m "chore: regen docs index"
+        git push
