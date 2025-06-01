@@ -1,0 +1,1 @@
+{"config":{"lang":["en"],"separator":"[\\s\\-]+","pipeline":["stopWordFilter"]},"docs":[{"location":"","title":"AI-UX Docs","text":"<p>Welcome. Navigate with the sidebar \u27a1\ufe0f</p>"},{"location":"_index/","title":"index","text":"<ul> <li>Home: docs/_index.md</li> <li>Docs:<ul> <li>Overview: docs/_index.md</li> </ul> </li> </ul>"}]}
